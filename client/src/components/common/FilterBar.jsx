@@ -3,10 +3,26 @@
 // navbar; FilterMenu lives in the board header bar.
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../../api/client';
-import { dueState } from '../board/CardItem';
 import Icon from './Icon';
 
 export const EMPTY_FILTERS = { labelIds: [], memberIds: [], due: null };
+
+const DAY = 24 * 60 * 60 * 1000;
+
+// Does a card's due date fall within the selected due-date filter window?
+function matchesDue(dueDate, filter) {
+  if (filter === 'none') return !dueDate;
+  if (!dueDate) return false;
+  const due = new Date(dueDate).getTime();
+  const now = Date.now();
+  switch (filter) {
+    case 'overdue': return due < now;
+    case 'soon':    return due >= now && due < now + DAY;       // next day
+    case 'week':    return due >= now && due < now + 7 * DAY;   // next week
+    case 'month':   return due >= now && due < now + 31 * DAY;  // next month
+    default:        return true;
+  }
+}
 
 export function cardMatchesFilters(card, filters) {
   if (filters.labelIds.length && !filters.labelIds.some((id) => card.label_ids?.includes(id))) {
@@ -15,10 +31,7 @@ export function cardMatchesFilters(card, filters) {
   if (filters.memberIds.length && !filters.memberIds.some((id) => card.member_ids?.includes(id))) {
     return false;
   }
-  if (filters.due) {
-    const state = dueState(card.due_date);
-    if (filters.due === 'none' ? card.due_date : state !== filters.due) return false;
-  }
+  if (filters.due && !matchesDue(card.due_date, filters.due)) return false;
   return true;
 }
 
