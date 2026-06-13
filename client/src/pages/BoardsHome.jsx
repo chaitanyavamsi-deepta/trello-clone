@@ -93,16 +93,6 @@ export default function BoardsHome() {
                   <Icon name="board" /> Boards
                 </span>
               </li>
-              <li className="home__sidebar-li">
-                <span className="home__nav-item home__nav-item--inert">
-                  <Icon name="template" /> Templates
-                </span>
-              </li>
-              <li className="home__sidebar-li">
-                <span className="home__nav-item home__nav-item--inert">
-                  <Icon name="home" /> Home
-                </span>
-              </li>
             </ul>
           </header>
           <section className="home__sidebar-workspaces">

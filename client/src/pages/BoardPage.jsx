@@ -198,7 +198,6 @@ const { board, loading, error, toast, actions } = useBoard(Number(boardId));
             ))}
           </div>
           <FilterMenu board={board} filters={filters} onFiltersChange={setFilters} compact />
-          <button className="board-header__btn" title="Board menu"><Icon name="more" size={16} /></button>
         </div>
       </header>
 

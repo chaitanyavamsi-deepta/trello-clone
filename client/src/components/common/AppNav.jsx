@@ -38,12 +38,6 @@ export default function AppNav({ variant = 'dark', search, onCreate, bgColor }) 
         )}
       </div>
       <div className="appnav__right">
-        <span className="appnav__icon" title="Notifications">
-          <Icon name="bell" />
-        </span>
-        <span className="appnav__icon" title="Help">
-          <Icon name="help" />
-        </span>
         <span className="avatar appnav__avatar" title="Alice Johnson (default user)">AJ</span>
       </div>
     </nav>
