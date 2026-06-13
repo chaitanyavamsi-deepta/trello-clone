@@ -13,8 +13,8 @@ function LogoGlyph() {
         d="M0 5C0 2.24 2.24 0 5 0H19C21.76 0 24 2.24 24 5V19C24 21.76 21.76 24 19 24H5C2.24 24 0 21.76 0 19V5Z"
         fill="#0055CC"
       />
-      <rect x="4.43" y="4.43" width="5.91" height="13.8" rx="0.95" fill="#FFFFFF" />
-      <rect x="13.66" y="4.43" width="5.91" height="8.34" rx="0.95" fill="#FFFFFF" />
+      <rect className="logo-bar logo-bar--1" x="4.43" y="4.43" width="5.91" height="13.8" rx="0.95" fill="#FFFFFF" />
+      <rect className="logo-bar logo-bar--2" x="13.66" y="4.43" width="5.91" height="8.34" rx="0.95" fill="#FFFFFF" />
     </svg>
   );
 }
