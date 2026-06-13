@@ -94,7 +94,11 @@ const { board, loading, error, toast, actions } = useBoard(Number(boardId));
     return dimmed;
   }, [board, filters, searchIds, filtersActive]);
 
-  if (loading) return <div className="board-page board-page--empty">Loading…</div>;
+  if (loading) return (
+    <div className="board-page board-page--empty">
+      <div className="spinner spinner--lg" />
+    </div>
+  );
   if (error || !board)
     return (
       <div className="board-page board-page--empty">
@@ -184,9 +188,6 @@ const { board, loading, error, toast, actions } = useBoard(Number(boardId));
           ) : (
             <h1 className="board-header__title" onClick={() => setEditingTitle(true)}>{boardTitle}</h1>
           )}
-          <button className="board-header__icon-btn" title="Watch board"><Icon name="eye" size={16} /></button>
-          <button className="board-header__icon-btn" title="Views"><Icon name="down" size={12} /></button>
-          <span className="board-header__sep" />
         </div>
         <div className="board-header__right">
           <div className="board-header__facepile">
