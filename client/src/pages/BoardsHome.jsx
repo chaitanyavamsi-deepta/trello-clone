@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { resolveBackground } from '../utils/backgrounds';
@@ -29,11 +29,25 @@ export default function BoardsHome() {
   const [creating, setCreating] = useState(searchParams.get('create') === '1');
   const [title, setTitle] = useState('');
   const [q, setQ] = useState('');
+  const [wsOpen, setWsOpen] = useState(true);
+  const [members, setMembers] = useState([]);
+  const [membersOpen, setMembersOpen] = useState(false);
+  const membersRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     api.listBoards().then(setBoards).catch((err) => setError(err.message));
+    api.listMembers().then(setMembers).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!membersOpen) return;
+    function onOutside(e) {
+      if (membersRef.current && !membersRef.current.contains(e.target)) setMembersOpen(false);
+    }
+    document.addEventListener('mousedown', onOutside);
+    return () => document.removeEventListener('mousedown', onOutside);
+  }, [membersOpen]);
 
   async function createBoard(e) {
     e.preventDefault();
@@ -95,12 +109,51 @@ export default function BoardsHome() {
             <div><span className="home__ws-label">Workspaces</span></div>
             <ul className="home__sidebar-list">
               <li className="home__sidebar-li">
-                <span className="home__nav-item">
+                <button
+                  className="home__nav-item home__ws-toggle"
+                  onClick={() => setWsOpen((v) => !v)}
+                >
                   <span className="home__workspace-avatar home__workspace-avatar--sm">T</span>
                   Trello Workspace
-                  <span className="home__chevron"><Icon name="down" size={12} /></span>
-                </span>
+                  <span className={`home__chevron${wsOpen ? ' home__chevron--open' : ''}`}>
+                    <Icon name="down" size={12} />
+                  </span>
+                </button>
               </li>
+              {wsOpen && (
+                <>
+                  <li className="home__sidebar-li">
+                    <span className="home__nav-item home__nav-item--active home__nav-item--sub">
+                      <Icon name="board" /> Boards
+                    </span>
+                  </li>
+                  <li className="home__sidebar-li home__members-li" ref={membersRef}>
+                    <button
+                      className="home__nav-item home__nav-item--sub home__members-btn"
+                      onClick={() => setMembersOpen((v) => !v)}
+                    >
+                      <Icon name="member" /> Members
+                      <span className="home__members-count">{members.length}</span>
+                    </button>
+                    {membersOpen && (
+                      <div className="home__members-pop">
+                        <h4 className="home__members-pop-title">Workspace members</h4>
+                        {members.map((m) => (
+                          <div key={m.id} className="home__members-row">
+                            <span className="avatar" style={{ background: m.avatar_color }}>
+                              {m.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
+                            </span>
+                            <div className="home__members-info">
+                              <span className="home__members-name">{m.name}</span>
+                              <span className="home__members-email">{m.email}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                </>
+              )}
             </ul>
           </section>
         </nav>
@@ -121,14 +174,9 @@ export default function BoardsHome() {
             <div className="home__workspace">
               <span className="home__workspace-avatar">T</span>
               <strong>Trello Workspace</strong>
-              <div className="home__ws-actions">
-                <button className="home__ws-btn"><Icon name="board" /> Boards</button>
-                <button className="home__ws-btn"><Icon name="member" /> Members</button>
-                <button className="home__ws-btn"><Icon name="gear" /> Settings</button>
-              </div>
             </div>
             {error && <p className="error">{error}</p>}
-            {!boards && !error && <p className="muted">Loading…</p>}
+            {!boards && !error && <div className="home__loading"><div className="spinner" /></div>}
             <div className="home__grid">
               {visible?.map((board) => (
                 <BoardTile key={board.id} board={board} />

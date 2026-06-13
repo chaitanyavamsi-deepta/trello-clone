@@ -20,6 +20,7 @@ async function http(method, path, body) {
 }
 
 export const api = {
+  listMembers: () => http('GET', '/members'),
   listBoards: () => http('GET', '/boards'),
   createBoard: (title) => http('POST', '/boards', { title }),
   getBoard: (id) => http('GET', `/boards/${id}`),
