@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: trello-pg
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: trello_clone
+    ports:
+      - '5433:5432'
+    volumes:
+      # Applied automatically (alphabetical order) on first boot of an empty volume
+      - ./server/migrations/test-db.sql:/docker-entrypoint-initdb.d/00-test-db.sql:ro
+      - ./server/migrations/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./server/migrations/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d trello_clone']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
