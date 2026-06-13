@@ -69,3 +69,7 @@ INSERT INTO checklist_items (checklist_id, content, is_complete, position) VALUE
   (1, 'Reorder lists horizontally', true,  1024),
   (1, 'Move cards across lists',    true,  2048),
   (1, 'Persist fractional positions on drop', false, 3072);
+
+INSERT INTO card_comments (card_id, member_id, body) VALUES
+  (4, 2, 'Started with @dnd-kit — the multi-container sortable preset fits our lists/cards model.'),
+  (4, 3, 'Nice. Let''s make sure the drop persists optimistically so it feels instant.');

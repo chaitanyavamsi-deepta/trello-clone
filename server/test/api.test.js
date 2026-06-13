@@ -231,6 +231,28 @@ describe('checklists', () => {
   });
 });
 
+describe('comments', () => {
+  it('adds a comment, returns it on the card, and deletes it', async () => {
+    const added = await request(app)
+      .post('/api/v1/cards/1/comments')
+      .send({ body: 'Looks good to me' });
+    expect(added.status).toBe(201);
+    expect(added.body.body).toBe('Looks good to me');
+    expect(added.body.member_name).toBeTruthy(); // author joined in
+
+    const card = await request(app).get('/api/v1/cards/1');
+    expect(card.body.comments.some((c) => c.id === added.body.id)).toBe(true);
+
+    const del = await request(app).delete(`/api/v1/comments/${added.body.id}`);
+    expect(del.status).toBe(204);
+  });
+
+  it('rejects an empty comment body', async () => {
+    const res = await request(app).post('/api/v1/cards/1/comments').send({ body: '   ' });
+    expect(res.status).toBe(400);
+  });
+});
+
 describe('search', () => {
   it('finds cards by title substring, case-insensitive', async () => {
     const res = await request(app).get('/api/v1/boards/1/cards/search?q=DRAG');

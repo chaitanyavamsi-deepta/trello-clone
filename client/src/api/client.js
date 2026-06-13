@@ -52,4 +52,7 @@ export const api = {
     http('POST', `/checklists/${checklistId}/items`, { content }),
   updateChecklistItem: (id, patch) => http('PUT', `/checklist-items/${id}`, patch),
   deleteChecklistItem: (id) => http('DELETE', `/checklist-items/${id}`),
+
+  addComment: (cardId, body) => http('POST', `/cards/${cardId}/comments`, { body }),
+  deleteComment: (id) => http('DELETE', `/comments/${id}`),
 };

@@ -1,8 +1,8 @@
 -- Trello Clone schema (docs/schema-design.md)
 -- Idempotent: safe to re-run on a fresh database.
 
-DROP TABLE IF EXISTS checklist_items, checklists, card_members, card_labels,
-                     labels, cards, lists, boards, members CASCADE;
+DROP TABLE IF EXISTS card_comments, checklist_items, checklists, card_members,
+                     card_labels, labels, cards, lists, boards, members CASCADE;
 
 CREATE TABLE members (
     id           SERIAL PRIMARY KEY,
@@ -73,7 +73,16 @@ CREATE TABLE checklist_items (
     position     DOUBLE PRECISION NOT NULL
 );
 
+CREATE TABLE card_comments (
+    id         SERIAL PRIMARY KEY,
+    card_id    INTEGER       NOT NULL REFERENCES cards(id)   ON DELETE CASCADE,
+    member_id  INTEGER       NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+    body       VARCHAR(5000) NOT NULL,
+    created_at TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+
 CREATE INDEX idx_lists_board     ON lists(board_id, position);
+CREATE INDEX idx_comments_card   ON card_comments(card_id, created_at DESC);
 CREATE INDEX idx_cards_list      ON cards(list_id, position) WHERE NOT is_archived;
 CREATE INDEX idx_labels_board    ON labels(board_id);
 CREATE INDEX idx_checklists_card ON checklists(card_id);

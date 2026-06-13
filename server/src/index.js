@@ -29,6 +29,7 @@ app.use('/api/v1', require('./routes/cards'));
 app.use('/api/v1', require('./routes/labels'));
 app.use('/api/v1', require('./routes/members'));
 app.use('/api/v1', require('./routes/checklists'));
+app.use('/api/v1', require('./routes/comments'));
 
 app.use((_req, res) => res.status(404).json({ error: 'Not found' }));
 app.use(errorHandler);

@@ -17,7 +17,7 @@ async function getCardWithDetails(id) {
   const card = await getCardById(id);
   if (!card) return null;
 
-  const [labels, members, checklists] = await Promise.all([
+  const [labels, members, checklists, comments] = await Promise.all([
     pool.query('SELECT label_id FROM card_labels WHERE card_id = $1 ORDER BY label_id', [id]),
     pool.query('SELECT member_id FROM card_members WHERE card_id = $1 ORDER BY member_id', [id]),
     pool.query(
@@ -32,6 +32,14 @@ async function getCardWithDetails(id) {
        ORDER BY ch.position, ch.id`,
       [id]
     ),
+    pool.query(
+      `SELECT c.id, c.member_id, c.body, c.created_at,
+              m.name AS member_name, m.avatar_color AS member_color
+       FROM card_comments c JOIN members m ON m.id = c.member_id
+       WHERE c.card_id = $1
+       ORDER BY c.created_at DESC, c.id DESC`,
+      [id]
+    ),
   ]);
 
   return {
@@ -39,6 +47,7 @@ async function getCardWithDetails(id) {
     label_ids: labels.rows.map((r) => r.label_id),
     member_ids: members.rows.map((r) => r.member_id),
     checklists: checklists.rows,
+    comments: comments.rows,
   };
 }
 

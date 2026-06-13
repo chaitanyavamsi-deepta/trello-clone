@@ -13,6 +13,7 @@ export default function CardModal({ cardId, board, actions, onClose }) {
   const [picker, setPicker] = useState(null); // 'labels' | 'members' | null
   const [descEditing, setDescEditing] = useState(false);
   const [newChecklist, setNewChecklist] = useState('');
+  const [newComment, setNewComment] = useState('');
   const attrsRef = useRef(null);
 
   const syncChecklistCounts = useCallback((checklists) => {
@@ -128,6 +129,38 @@ export default function CardModal({ cardId, board, actions, onClose }) {
       setCard({ ...card, checklists });
       syncChecklistCounts(checklists);
     } catch (err) { actions.showToast(err.message); }
+  }
+
+  async function addComment(e) {
+    e.preventDefault();
+    const trimmed = newComment.trim();
+    if (!trimmed) return;
+    try {
+      const comment = await api.addComment(cardId, trimmed);
+      setCard({ ...card, comments: [comment, ...(card.comments || [])] });
+      setNewComment('');
+    } catch (err) { actions.showToast(err.message); }
+  }
+
+  async function deleteComment(commentId) {
+    try {
+      await api.deleteComment(commentId);
+      setCard({ ...card, comments: card.comments.filter((c) => c.id !== commentId) });
+    } catch (err) { actions.showToast(err.message); }
+  }
+
+  function relativeTime(ts) {
+    const diff = Date.now() - new Date(ts).getTime();
+    const mins = Math.round(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  function initials(name) {
+    return name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
   }
 
   const cardLabels = board.labels.filter((l) => card.label_ids.includes(l.id));
@@ -270,6 +303,40 @@ export default function CardModal({ cardId, board, actions, onClose }) {
             />
             <button type="submit">Add</button>
           </form>
+
+          {/* Comments */}
+          <section className="modal__section">
+            <div className="modal__section-head">
+              <Icon name="description" size={16} />
+              <h3>Comments</h3>
+            </div>
+            <form className="modal__comment-add" onSubmit={addComment}>
+              <input
+                value={newComment}
+                maxLength={5000}
+                placeholder="Write a comment…"
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <button type="submit" disabled={!newComment.trim()}>Comment</button>
+            </form>
+            <ul className="modal__comments">
+              {(card.comments || []).map((c) => (
+                <li key={c.id} className="modal__comment">
+                  <span className="avatar" style={{ background: c.member_color }} title={c.member_name}>
+                    {initials(c.member_name)}
+                  </span>
+                  <div className="modal__comment-body">
+                    <div className="modal__comment-meta">
+                      <strong>{c.member_name}</strong>
+                      <span className="modal__comment-time">{relativeTime(c.created_at)}</span>
+                    </div>
+                    <p>{c.body}</p>
+                    <button className="modal__comment-delete" onClick={() => deleteComment(c.id)}>Delete</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
 
         {/* Sidebar */}
