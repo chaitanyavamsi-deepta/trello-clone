@@ -106,7 +106,7 @@ input:focus, textarea:focus { outline: none; border-color: #0079bf; }
 .appnav__search:focus { background: #fff; color: var(--text); border-color: #4688ec; }
 .appnav--light .appnav__searchicon { color: var(--text-subtle); }
 .icon { flex: 0 0 auto; vertical-align: -3px; }
-.appnav--light { background: #fff; color: var(--text); } /* no border-bottom — matches Trello */
+.appnav--light { background: #fff; color: var(--text); border-bottom: 1px solid var(--border); }
 .appnav--light .appnav__logo { color: #172b4d; } /* wordmark fill from reference SVG */
 .appnav--light .appnav__search {
   background: #fff; border-color: #8c8f97; color: var(--text); /* --ds-border-input */
