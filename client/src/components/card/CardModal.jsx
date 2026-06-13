@@ -45,7 +45,7 @@ export default function CardModal({ cardId, board, actions, onClose }) {
   }, [onClose]);
 
   if (error) return <Overlay onClose={onClose}><p className="error">{error}</p></Overlay>;
-  if (!card) return <Overlay onClose={onClose}><p className="muted">Loading…</p></Overlay>;
+  if (!card) return <Overlay onClose={onClose}><div className="modal__loading"><div className="spinner" /></div></Overlay>;
 
   const listName = board.lists.find((l) => l.id === card.list_id)?.title;
 
