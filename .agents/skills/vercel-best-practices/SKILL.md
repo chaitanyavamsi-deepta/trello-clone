@@ -17,11 +17,19 @@ Consult these rules when:
 
 ## Categories
 
+**Frontend (React SPA)**
 - **rerender-*** — avoid unnecessary re-renders and wasted state work
-- **js-*** — algorithmic / data-structure efficiency in hot paths
-- **async-*** — parallelize independent I/O
 - **client-*** — browser-side correctness (listeners, storage)
-- **bundle-*** / **rendering-*** — ship and paint less
+- **rendering-*** — render/paint less
+
+**Cross-tier (general JavaScript)**
+- **js-*** — algorithmic / data-structure efficiency in hot paths (used on both client and server)
+- **async-*** — parallelize independent I/O
+
+**Backend (Express + PostgreSQL)**
+- **db-*** — query shape, indexing, pooling, and transactions:
+  `db-aggregate-query` (no N+1), `db-partial-index`, `db-connection-pool`,
+  `db-transaction-locking`, `db-limit-results`
 
 See [rules/](rules/) for the individual rules and [AGENTS.md](AGENTS.md) for how an
 agent should apply them.
