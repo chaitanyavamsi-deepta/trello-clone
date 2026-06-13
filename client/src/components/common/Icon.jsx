@@ -26,6 +26,7 @@ const PATHS = {
   eye: 'M8 3C4.5 3 1.5 5.5 0 8c1.5 2.5 4.5 5 8 5s6.5-2.5 8-5c-1.5-2.5-4.5-5-8-5zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3',
   // Exact Trello done-state icon (filled disc + checkmark, evenodd)
   circledone: 'M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M6.75 9.828 4.826 7.52l-1.152.96 2.5 3a.75.75 0 0 0 1.152 0l5-6-1.152-.96z',
+  close: 'm9.06 8 4.97-4.97-1.06-1.06L8 6.94 3.03 1.97 1.97 3.03 6.94 8l-4.97 4.97 1.06 1.06L8 9.06l4.97 4.97 1.06-1.06z',
 };
 
 // Icons with multiple <path> elements (e.g. LabelIcon has a dot + outline)
